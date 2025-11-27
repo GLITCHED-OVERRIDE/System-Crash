@@ -59,6 +59,20 @@
 </head>
 <body>
 
+<!-- INTRO SCREEN -->
+<div id="introScreen" style="
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+">
+  <img src="https://raw.githubusercontent.com/NOTAHACKER9999/Hypper-Drive/refs/heads/main/Intro.gif"
+       style="width: 100%; height: 100%; object-fit: contain;">
+</div>
+
 <div class="sidebar">
   <a id="dashboardBtn" class="active">Dashboard</a>
   <a id="libraryBtn">Library</a>
@@ -70,8 +84,7 @@
     <div id="moviesTab" class="tab">Movies</div>
   </div>
 
-  <div class="content" id="contentArea">
-  </div>
+  <div class="content" id="contentArea"></div>
 </div>
 
 <!-- MOVIE OVERLAY -->
@@ -282,16 +295,31 @@ async function searchMovies(q){
   document.getElementById("upRow").innerHTML="";
 }
 
+/* UPDATED openGame() WITH INTRO */
 async function openGame(game){
-  if(!game.url){ alert("No game URL"); return; }
-  addRecentGame(game);
-  try{
-    const r=await fetch(game.url);
-    const html=await r.text();
-    document.open(); document.write(html); document.close();
-  }catch(e){
-    alert("Failed to load game");
+  if(!game.url){ 
+    alert("No game URL"); 
+    return; 
   }
+
+  addRecentGame(game);
+
+  // Show intro
+  const intro = document.getElementById("introScreen");
+  intro.style.display = "flex";
+
+  // Wait 4 seconds, then load game
+  setTimeout(async () => {
+    try{
+      const r = await fetch(game.url);
+      const html = await r.text();
+      document.open();
+      document.write(html);
+      document.close();
+    }catch(e){
+      alert("Failed to load game");
+    }
+  }, 4000);
 }
 
 async function showMovie(id){
